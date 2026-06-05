@@ -47,7 +47,7 @@ def get_video_json():
         with open("log2.json", "r", encoding="utf-8") as f:
             result_data = json.load(f)
         subprocess.run(["git", "add", "./*.json"], check=True)
-        subprocess.run(["git", "commit", "-m", "UPDATE: Current proxy URL to urls.json"], check=True)
+        subprocess.run(["git", "commit", "-m", "Saved video config to log2.json via Termux on Galaxy S25 & Galaxy S25でTermux経由でlog2.jsonに保存されたビデオ情報のアップ"], check=True)
         subprocess.run(["git", "push", "origin", "main", "--force"], check=True)
         
             
