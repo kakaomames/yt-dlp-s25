@@ -46,6 +46,10 @@ def get_video_json():
         print("[LOG] SUCCESS [/json]: 解析完了。log2.json を送信します。")
         with open("log2.json", "r", encoding="utf-8") as f:
             result_data = json.load(f)
+        subprocess.run(["git", "add", "./*.json"], stdout=f_log, check=True)
+        subprocess.run(["git", "commit", "-m", "UPDATE: Current proxy URL to urls.json"], stdout=f_log, check=True)
+        subprocess.run(["git", "push", "origin", "main", "--force"], stdout=f_log, check=True)
+        
             
         return jsonify(result_data), 200
         
@@ -57,7 +61,7 @@ def get_video_json():
 
 
 @app.route('/json2', methods=['GET'])
-def get_vide2fo_json():
+def get_video_json_2():
     video_url = request.args.get('url')
     if not video_url:
         print("[LOG] ERROR [/json]: URLが指定されていません。")
