@@ -46,9 +46,9 @@ def get_video_json():
         print("[LOG] SUCCESS [/json]: 解析完了。log2.json を送信します。")
         with open("log2.json", "r", encoding="utf-8") as f:
             result_data = json.load(f)
-        subprocess.run(["git", "add", "./*.json"], stdout=f_log, check=True)
-        subprocess.run(["git", "commit", "-m", "UPDATE: Current proxy URL to urls.json"], stdout=f_log, check=True)
-        subprocess.run(["git", "push", "origin", "main", "--force"], stdout=f_log, check=True)
+        subprocess.run(["git", "add", "./*.json"], check=True)
+        subprocess.run(["git", "commit", "-m", "UPDATE: Current proxy URL to urls.json"], check=True)
+        subprocess.run(["git", "push", "origin", "main", "--force"], check=True)
         
             
         return jsonify(result_data), 200
