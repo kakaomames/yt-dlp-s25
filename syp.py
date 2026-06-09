@@ -1,14 +1,27 @@
 import subprocess
 import time
 
+WAIT_TIME = 10  # 1時間
+
 def main():
-    print("[LOG] syp.sh 実行")
+    print("\n[LOG] syp.sh 実行")
     subprocess.run(["bash", "syp.sh"])
 
-if __name__ == '__main__':
-    print("[LOG] SYSTEM: ========================================================")
-    print("[LOG] SYSTEM: ========================================================")
+def wait_meter(seconds):
+    for i in range(seconds):
+        percent = int((i + 1) / seconds * 100)
 
+        bar_length = 30
+        filled = int(percent / 100 * bar_length)
+
+        bar = "■" * filled + "□" * (bar_length - filled)
+
+        print(f"\r[{bar}] {percent}%", end="")
+        time.sleep(1)
+
+    print()
+
+if __name__ == "__main__":
     while True:
         main()
-        time.sleep(10)  # 1時間待機
+        wait_meter(WAIT_TIME)
