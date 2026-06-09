@@ -11,4 +11,4 @@ if __name__ == '__main__':
 
     while True:
         main()
-        time.sleep(3600)  # 1時間待機
+        time.sleep(100)  # 1時間待機
