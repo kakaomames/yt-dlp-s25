@@ -1,27 +1,48 @@
 import subprocess
 import time
+import signal
 
-WAIT_TIME = 10  # 1時間
+RUN_TIME = 3600  # 1時間
 
-def main():
-    print("\n[LOG] syp.sh 実行")
-    subprocess.run(["bash", "syp.sh"])
+while True:
+    print("\n[LOG] syp.sh 起動")
 
-def wait_meter(seconds):
-    for i in range(seconds):
-        percent = int((i + 1) / seconds * 100)
+    proc = subprocess.Popen(["bash", "syp.sh"])
+
+    for i in range(RUN_TIME):
+        percent = int((i + 1) / RUN_TIME * 100)
 
         bar_length = 30
-        filled = int(percent / 100 * bar_length)
+        filled = int(bar_length * (i + 1) / RUN_TIME)
 
         bar = "■" * filled + "□" * (bar_length - filled)
 
-        print(f"\r[{bar}] {percent}%", end="")
+        remain = RUN_TIME - i - 1
+        mins = remain // 60
+        secs = remain % 60
+
+        print(
+            f"\r[{bar}] {percent:3d}% 残り {mins:02d}:{secs:02d}",
+            end="",
+            flush=True
+        )
+
+        # syp.sh が先に終了したら再起動
+        if proc.poll() is not None:
+            print("\n[LOG] syp.sh が終了しました")
+            break
+
         time.sleep(1)
 
-    print()
+    else:
+        # 1時間経過
+        print("\n[LOG] 1時間経過、停止します")
+        proc.send_signal(signal.SIGINT)
 
-if __name__ == "__main__":
-    while True:
-        main()
-        wait_meter(WAIT_TIME)
+        try:
+            proc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            print("[LOG] 停止しないので強制終了")
+            proc.kill()
+
+    print("[LOG] 再起動します")
