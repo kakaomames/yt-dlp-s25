@@ -12,7 +12,7 @@ while True:
     for i in range(RUN_TIME):
         percent = int((i + 1) / RUN_TIME * 100)
 
-        bar_length = 30
+        bar_length = 20
         filled = int(bar_length * (i + 1) / RUN_TIME)
 
         bar = "■" * filled + "□" * (bar_length - filled)
