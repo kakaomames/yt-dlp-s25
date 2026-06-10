@@ -2,7 +2,7 @@ import subprocess
 import time
 import signal
 
-RUN_TIME = 3600  # 1時間
+RUN_TIME = 900  # 1時間
 
 while True:
     print("\n[LOG] syp.sh 起動")
