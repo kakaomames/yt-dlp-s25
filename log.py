@@ -1,7 +1,7 @@
 import json
 
 def get_best_thumbnail(thumbnails):
-    """ サムネイルリストから一番最後（高画質）のリンクを取得 """
+    """ サムネイルリストから一番最後（高画質）のリンクを取得! """
     if isinstance(thumbnails, list) and len(thumbnails) > 0:
         return thumbnails[-1].get("url")
     return None

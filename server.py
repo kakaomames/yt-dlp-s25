@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify, send_file
 
 app = Flask(__name__)
 
-# 一時ファイルを格納するディレクトリ（なければ作成）
+# 一時ファイルを格納するディレクトリ（なければ作成）-
 TMP_DIR = "download_tasks"
 os.makedirs(TMP_DIR, exist_ok=True)
 
