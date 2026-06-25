@@ -56,28 +56,6 @@ Log() {
     local time=$(date +"%H:%M:%S")
     echo "[$time] $1"
 }
-# GitHubへファイルをPUTする専用関数
-upload_to_github() {
-    local file_path=$1
-    local target_path=$2
-    
-    # SHAを取得（Bearerに変更！）
-    local sha=$(curl -s -H "Authorization: Bearer $TOKEN" \
-        -H "X-GitHub-Api-Version: 2026-03-10" \
-        "https://api.github.com/repos/$USER/$REPO/contents/$target_path" | jq -r '.sha')
-    
-    # 既存のSHAが取れていない（null）場合は空文字として扱う
-    [ "$sha" == "null" ] && sha=""
-
-    # アップロード実行
-    curl -s -X PUT \
-        -H "Authorization: Bearer $TOKEN" \
-        -H "Accept: application/vnd.github+json" \
-        -H "X-GitHub-Api-Version: 2026-03-10" \
-        "https://api.github.com/repos/$USER/$REPO/contents/$target_path" \
-        -d "$(jq -n --arg content "$(base64 -w 0 $file_path)" --arg sha "$sha" \
-        '{"message": "VALUE_CHANGE: curl上書き更新", "content": $content, "sha": $sha}')" > /dev/null
-}
 
 # 3. 主軸ブランチの名前を確実に「main」に設定
 git branch -M main
@@ -133,37 +111,39 @@ while true; do
             git add ./*.py
             git add ./*.zip
             git commit -m "UPDATE: Current proxy URL to $LATEST_URL" || true
-
-
-
-
-
             
-            # 修正前後のイメージ
-            upload_to_github "$LOCAL_FILE" "$TARGET_PATH"
-            upload_to_github "$LOCAL_FIL" "$TARGET_PAT"
-            upload_to_github "$LOCAL_FI" "$TARGET_PA"
-            Log "[LOG] SUCCESS: GitHubへの同期が100%完了しました！"
-
             # 🌟【物理ねじ伏せ】浮気する古い設定URLを完全に消した状態で、file.txtの最新トークンを直接ブチ込む！
             #git push https://$GITPAD@github.com/kakaomames/yt-dlp-s25.git main --force
             # 1. 既存ファイルのSHAを取得（新規ファイルならこのステップは飛ばしてOK）
-            # SHA=$(curl -s -H "Authorization: token $TOKEN" https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PATH | jq -r '.sha')
+            SHA=$(curl -s -H "Authorization: token $TOKEN" https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PATH | jq -r '.sha')
             # 2. SHA付きでPUTリクエスト（新規なら "sha": $sha の部分は不要）
-            # curl -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PATH -d "$(jq -n --arg content "$(base64 -w 0 $LOCAL_FILE)" --arg sha "$SHA" '{"message": "VALUE_CHANGE: curl上書き更新", "content": $content, "sha": $sha}')"
+            curl -X PUT \
+            -H "Authorization: token $TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PATH \
+            -d "$(jq -n --arg content "$(base64 -w 0 $LOCAL_FILE)" --arg sha "$SHA" '{"message": "VALUE_CHANGE: curl上書き更新", "content": $content, "sha": $sha}')"
             
             
             
             # 1. 既存ファイルのSHAを取得（新規ファイルならこのステップは飛ばしてOK）
-            # SHAA=$(curl -s -H "Authorization: token $TOKEN" https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PAT | jq -r '.sha')
+            SHAA=$(curl -s -H "Authorization: token $TOKEN" https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PAT | jq -r '.sha')
             # 2. SHA付きでPUTリクエスト（新規なら "sha": $sha の部分は不要）
-            # curl -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PAT -d "$(jq -n --arg content "$(base64 -w 0 $LOCAL_FIL)" --arg sha "$SHAA" '{"message": "VALUE_CHANGE: curl上書き更新", "content": $content, "sha": $sha}')"
+            curl -X PUT \
+            -H "Authorization: token $TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PAT \
+            -d "$(jq -n --arg content "$(base64 -w 0 $LOCAL_FIL)" --arg sha "$SHAA" '{"message": "VALUE_CHANGE: curl上書き更新", "content": $content, "sha": $sha}')"
             
             
             # 1. 既存ファイルのSHAを取得（新規ファイルならこのステップは飛ばしてOK）
-            # SHAS=$(curl -s -H "Authorization: token $TOKEN" https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PA | jq -r '.sha')
-            # 2. SHA付きでPUTリクエスト（新規なら "sha": $sha の部分は不要
-            # curl -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PA -d "$(jq -n --arg content "$(base64 -w 0 $LOCAL_FI)" --arg sha "$SHAS" '{"message": "VALUE_CHANGE: curl上書き更新", "content": $content, "sha": $sha}')"
+            SHAS=$(curl -s -H "Authorization: token $TOKEN" https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PA | jq -r '.sha')
+            # 2. SHA付きでPUTリクエスト（新規なら "sha": $sha の部分は不要）
+            
+            curl -X PUT \
+            -H "Authorization: token $TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PA \
+            -d "$(jq -n --arg content "$(base64 -w 0 $LOCAL_FI)" --arg sha "$SHAS" '{"message": "VALUE_CHANGE: curl上書き更新", "content": $content, "sha": $sha}')"
 
 
             
