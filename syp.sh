@@ -106,11 +106,11 @@ while true; do
             
             # ギット コマンドで強制プッシュ（--force）し続ける！
             echo "[LOG] ACTION: GitHubへ最新URLを強制プッシュ（--force）します..."
-            rm -rf .git/index.lock
-            git add ./*.json
-            git add ./*.py
-            git add ./*.zip
-            git commit -m "UPDATE: Current proxy URL to $LATEST_URL" || true
+            # rm -rf .git/index.lock
+            # git add ./*.json
+            # git add ./*.py
+            # git add ./*.zip
+            # git commit -m "UPDATE: Current proxy URL to $LATEST_URL" || true
             
             # 🌟【物理ねじ伏せ】浮気する古い設定URLを完全に消した状態で、file.txtの最新トークンを直接ブチ込む！
             #git push https://$GITPAD@github.com/kakaomames/yt-dlp-s25.git main --force
@@ -144,6 +144,18 @@ while true; do
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/$USER/$REPO/contents/$TARGET_PA \
             -d "$(jq -n --arg content "$(base64 -w 0 $LOCAL_FI)" --arg sha "$SHAS" '{"message": "VALUE_CHANGE: curl上書き更新", "content": $content, "sha": $sha}')"
+            
+            
+            
+            
+            SHASA=$(curl -s -H "Authorization: token $TOKEN" https://api.github.com/repos/$USER/$REPO/contents/log2.json | jq -r '.sha')
+            # 2. SHA付きでPUTリクエスト（新規なら "sha": $sha の部分は不要）
+            
+            curl -X PUT \
+            -H "Authorization: token $TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/$USER/$REPO/contents/log2.json \
+            -d "$(jq -n --arg content "$(base64 -w 0 log2.json)" --arg sha "$SHASA" '{"message": "VALUE_CHANGE: curl上書き更新", "content": $content, "sha": $sha}')"
 
 
             
