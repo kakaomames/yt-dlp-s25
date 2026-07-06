@@ -40,14 +40,14 @@ LOCAL_FIL="syp.sh"
 TARGET_PA="syp.py"
 LOCAL_FI="syp.py"
 
-git remote remove origin 2>/dev/null
-git remote add origin https://github.com/kakaomames/yt-dlp-s25.git
+# git remote remove origin 2>/dev/null
+# git remote add origin https://github.com/kakaomames/yt-dlp-s25.git
 
-git config --global user.email "kakaomames@example.com"
-git config --global user.name "kakaomames"
+# git config --global user.email "kakaomames@example.com"
+# git config --global user.name "kakaomames"
 
 # 最新情報を取得
-git fetch origin
+# git fetch origin
 
 rm -fr ./tunnel_output.log
 echo " " > tunnel_output.log
@@ -58,10 +58,10 @@ Log() {
 }
 
 # 3. 主軸ブランチの名前を確実に「main」に設定
-git branch -M main
+# git branch -M main
 
 # 4. 変更があったらログに出すため、現在の接続先を画面に表示して確認！
-git remote -v
+# git remote -v
 
 sleep 1
 echo "[LOG] ACTION: server.py を裏側で起動中..."
